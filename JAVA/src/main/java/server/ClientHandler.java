@@ -24,13 +24,14 @@ class ClientHandler extends Thread {
                 try {
                     int guess = gameLogic.validateGuess(inputLine);
                     boolean isCorrect = gameLogic.checkGuessCorrectness(guess);
-                    String response = gameLogic.generatePrefix(guess);
+                    prefix = ""
+//                     String prefix = gameLogic.generatePrefix(guess);
 
                     if (isCorrect) {
-                        out.println(response + " Congratulations! You guessed correctly!");
+                        out.println(prefix + " Congratulations! You guessed correctly!");
                         break;
                     } else {
-                        out.println(response + " Try again!");
+                        out.println(prefix + " Try again!");
                     }
                 } catch (IllegalArgumentException e) {
                     out.println(e.getMessage());
