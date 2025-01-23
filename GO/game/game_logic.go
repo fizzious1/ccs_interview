@@ -9,22 +9,16 @@ import (
 
 func ValidateGuess(input string) (int, error) {
 	guess, err := strconv.Atoi(input)
-	if err != nil {
-		return 0, fmt.Errorf("invalid input, please enter a number \n")
-	}
-	if guess < 1 || guess > 100 {
-		return 0, fmt.Errorf("number out of range, please guess between 1 and 100 \n")
-	}
-	return guess, nil
+	return guess, err
 }
 
-func CheckGuessCorrectness(guess int) bool {
+func ValidateGuessCorrectness(guess int) bool {
 	return guess == 42
 }
 
 func GeneratePrefix(guess int) {
 	// Initialize a random seed for unpredictable results
-	rand.Seed(time.Now().UnixNano())
+	rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	// Randomly select one of three different string formats
 	formatChoice := rand.Intn(3)

@@ -40,22 +40,27 @@ func StartServer() {
 		numGuess, err := ValidateGuess(guess)
 		if err != nil {
 			log.Printf("Error validating guess: %v", err)
-			_, err = conn.Write([]byte(err.Error()))
-		}
-		// Check if the guess matches the correct answer
-		var response, prefix string
-		if CheckGuessCorrectness(numGuess) {
-			// prefix = GeneratePrefix()
-			response = "Congratulations! You guessed the correct number!"
+			writeToClient(conn, err.Error())
 		} else {
-			response = "Try again!"
-		}
+			// Check if the guess matches the correct answer
+			var response, prefix string
+			if ValidateGuessCorrectness(numGuess) {
+				// prefix = GeneratePrefix()
+				response = "Congratulations! You guessed the correct number!"
+			} else {
+				response = "Try again!"
+			}
 
-		// Send the response back to the client
-		_, err = conn.Write([]byte(prefix + response))
-		if err != nil {
-			log.Printf("Error writing to client: %v", err)
-			return
+			// Send the response back to the client
+			writeToClient(conn, prefix+response)
 		}
+	}
+}
+
+func writeToClient(conn net.Conn, s string) {
+	_, err := conn.Write([]byte(s))
+	if err != nil {
+		log.Printf("Error writing to client: %v", err)
+		return
 	}
 }
