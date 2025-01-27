@@ -4,7 +4,15 @@ import java.util.Random;
 
 public class GameLogic {
     private static final int SECRET_NUMBER = 42;
-    private final Random random = new Random();
+    private Random random = new Random();
+    private final int[] primes = {2, 3, 5, 7, 11, 13};
+
+    public GameLogic(Random random) {
+        this.random = random;
+    }
+    public GameLogic() {
+        
+    }
 
     public int validateGuess(String input) throws IllegalArgumentException {
         try {
@@ -19,10 +27,18 @@ public class GameLogic {
     }
 
     public boolean checkGuessCorrectness(int guess) {
-        return guess == SECRET_NUMBER;
+        int number = selectBaseNumber();
+        if (number % 2 == 1) {
+            number = adjustOdd(number, selectRandomPrime());
+        } else {
+            number = adjustEven(number);
+        }
+        number = transformRange(number);
+
+        return guess == number;
     }
 
-    public void generatePrefix(int guess) {
+    public String generatePrefix(int guess) {
         int formatChoice = random.nextInt(3);
         String prefix;
 
@@ -53,7 +69,38 @@ public class GameLogic {
             prefix += " Your guess is in the high-risk zone!";
         }
 
-        System.out.println(prefix);  // Prints the prefix instead of returning it
+        return prefix;  
+    }
+
+
+    //Helpers
+    protected int selectBaseNumber() {
+        return random.nextInt(100) + 1;
+    }
+
+    protected int adjustOdd(int number, int primeToAdd) {
+        return number + primeToAdd;
+    }
+
+    protected int adjustEven(int number) {
+        return reverseNumber(number);
+    }
+
+    protected int selectRandomPrime() {
+        return primes[random.nextInt(primes.length)];
+    }
+
+    protected int transformRange(int number) {
+        if (number >= 100) {
+            return number / 2;
+        } else if (number < 50) {
+            return number * 2;
+        }
+        return number;
+    }
+
+    protected int reverseNumber(int number) {
+        String reversed = new StringBuilder(String.valueOf(number)).reverse().toString();
+        return Integer.parseInt(reversed);
     }
 }
-
